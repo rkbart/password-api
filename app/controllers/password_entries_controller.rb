@@ -4,10 +4,23 @@ class PasswordEntriesController < ApplicationController
     render json: current_user.password_entries
   end
 
+  def show
+    render json: current_user.password_entries.find(params[:id])
+  end
+
   def create
     entry = current_user.password_entries.new(password_entry_params)
     if entry.save
       render json: entry, status: :created
+    else
+      render json: { errors: entry.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    entry = current_user.password_entries.find(params[:id])
+    if entry.update(password_entry_params)
+      render json: entry
     else
       render json: { errors: entry.errors.full_messages }, status: :unprocessable_entity
     end
